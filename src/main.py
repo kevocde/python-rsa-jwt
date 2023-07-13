@@ -1,6 +1,7 @@
 import jwt
 import json
 import sys
+from jwcrypto import jwk
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
@@ -33,9 +34,13 @@ public_pem = public_key.public_bytes(
   format=serialization.PublicFormat.SubjectPublicKeyInfo
 )
 
-# Save the private key in a file
+# Save the public key in a file
 with open('id_rsa.pub', 'wb') as f:
   f.write(public_pem)
+
+with open('id_rsa_jwk.pub', 'wb') as f:
+  f.write(bytes(jwk.JWK.from_pem(public_pem).export_public(), sys.getdefaultencoding()))
+
 
 # Create a JWT token signed with the private key
 with open('assets/payload.json', 'r') as f:
